@@ -27,10 +27,6 @@
       </li>
     
     </ul>
-    <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form>
   </div>
 </nav>
 
@@ -43,8 +39,8 @@
       <h3>Get Patient Bill</h3><hr>
       <span style="font-size: 125%;">Enter Patient Id :</span>&nbsp;&nbsp;<input type="text" name="" id="textfield" >&nbsp;&nbsp;<button type="button" class="btn btn-primary" onclick="Searchify()">Search</button><br><br>
 
-<form id="myform" method="POST" action="{% url 'deskexecutive:checkout' %}" style="visibility: hidden;">
-  {% csrf_token %}
+<form id="myform" method="GET" action="{% url 'deskexecutive:checkout' %}" style="visibility: hidden;">
+
 
   <div class="form-group row">
     <label for="Pid" class="col-sm-2 col-form-label">Patient ID</label>
@@ -155,7 +151,7 @@
       function Searchify(){
         var uid=document.getElementById('textfield').value
           $.ajax({
-         type: "POST",
+         type: "GET",
 
          cache: false,
          url: "fetchactivepatient/",

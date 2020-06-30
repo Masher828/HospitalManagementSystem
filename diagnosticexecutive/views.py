@@ -1,4 +1,4 @@
-from django.shortcuts import render,get_object_or_404
+from django.shortcuts import render,get_object_or_404,redirect
 from django.http import HttpResponse
 from .models import Diagnosticmaster,Diagnostictest
 from deskexecutive.models import Userstore
@@ -16,27 +16,17 @@ def populateDiagnosticDB():
 		addTest.save()
 def getDiagnosisList(ws_pat_id):
 	diagnosisObj = Diagnostictest.objects.filter(ws_pat_id=ws_pat_id)
-	diagnosisDict = {}
+	diagnosisDict = []
 	i=0
+	cost=0
 	for tests in diagnosisObj:
 		testObj = get_object_or_404(Diagnosticmaster,ws_test_id=tests.ws_test_id)
 		print(testObj.ws_test_id)
-		diagnosisDict[i]= [testObj.ws_test_name,testObj.ws_charge]
+		diagnosisDict.append([testObj.ws_test_name,testObj.ws_charge])
 		i+=1
-	return diagnosisDict
+		cost+=testObj.ws_charge
+	return diagnosisDict, cost
 
-
-def addDiagnosis(request):
-     if request.method == 'POST':
-        testName = request.POST['testid']
-        charges = request.POST['charge']
-        ob = Diagnosticmaster()
-        ob.ws_charge=charges
-        ob.ws_test_name=testName
-        ob.save()
-        return render(request,'add.html',{"msg":"Test Added Succesfully"})
-     else:   
-        return render(request,'add.html')
 
 def fetchData(request):
 	if request.method == "POST":
@@ -58,17 +48,30 @@ def fetchData(request):
 
 def testDiagnose(request):
 	if request.method == 'POST':
-		p_id = request.POST['pid']
+		pid = request.POST['pid']
 		testId = request.POST['testid']
-		patients = Patients.objects.all()
-		if Diagnosticmaster.objects.filter(ws_test_id=testId).exists():
+		if Diagnosticmaster.objects.filter(ws_test_id=testId).exists() and Userstore.objects.filter(ws_pat_id=pid).exists():
 			ob = Diagnosticmaster.objects.filter(ws_test_id=testId)
-			dt = DiagnosticTest()
-			dt.ws_pat_id = patient.p_id
-			dt.ws_test_id = diagnos.ws_test_id
+			dt = Diagnostictest()
+			dt.ws_pat_id = pid
+			dt.ws_test_id = testId
 			dt.save()
-			return render(request,'testdiagnose.html',{'message':'Test Added Succesfully'})
+			return render(request,'diagnostic/testdiagnose.html',{'message':'Test Added Succesfully'})
 		else:
-			return render(request,'testdiagnose.html',{'message':"Test doesn't exists"})
+			return render(request,'diagnostic/testdiagnose.html',{'message':"Test doesn't exists"})
 	else:
-		return render(request,'testdiagnose.html')
+		return render(request,'diagnostic/testdiagnose.html')
+
+def add(request):
+     if request.method == 'POST':
+        testName = request.POST['testname']
+        charges = request.POST['charge']
+        print(testName,charges)
+        ob = Diagnosticmaster()
+        ob.ws_charge=charges
+        ob.ws_test_name=testName
+        ob.save()
+        return redirect('diagnostic:diagnosticHome')
+     else:   
+        return render(request,'diagnostic/add.html')
+        

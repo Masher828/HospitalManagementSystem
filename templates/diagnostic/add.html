@@ -1,0 +1,10 @@
+
+<form action="{% url 'diagnostic:addDiagnosticTest' %}" method="POST">
+    {%  csrf_token %}    
+    TestName:<input type="text" name="testname">
+    Charges:<input type="text" name="charge" >
+    <input type="submit" >
+
+
+</form>
+

@@ -1,6 +1,5 @@
 from django.db import models
 
-
 class Diagnosticmaster(models.Model):
 	ws_test_id = models.AutoField(primary_key=True, serialize = False)
 	ws_test_name= models.CharField(max_length=255)

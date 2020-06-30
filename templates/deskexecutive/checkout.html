@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
   <head>
@@ -9,13 +8,16 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
-    <title>Billing</title>
+    <title>Issue Medicine</title>
+    <style type="text/css">
+      body{overflow: hidden;}
+    </style>
   </head>
   <body>
    <!--navbar-->
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#">ABC Hospital</a>
+  <a class="navbar-brand" href="{% url 'landingPage'%}">ABC Hospital</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -25,48 +27,32 @@
       <li class="nav-item active">
         <a class="nav-link" href="{% url 'deskexecutive:deskHome' %}">Home <span class="sr-only">(current)</span></a>
       </li>
-    
     </ul>
-    <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form>
   </div>
 </nav>
+
     <!--navbar ends-->
 
-
-
-<div class="container-fluid bg-light" style="width: 100%; height: 100vh; overflow: auto; text-align: center;">
+<div class="container-fluid bg-light" style="width: 100%; height: 100vh; overflow: auto; text-align: center; overflow: auto;">
   <h1>Patient Billing</h1>
   <table class="table table-striped">
   <thead>
     <tr>
       <th scope="col">Id</th>
       <th scope="col">Name</th>
+      <th scope="col">SSN</th>
+      <th scope="col">Room Type</th>
       <th scope="col">Age</th>
       <th scope="col">Address</th>
-      <th scope="col">Date of Joining</th>
-        <th scope="col">Room Type</th>
+      <th scope="col">City</th>
+      <th scope="col">Date of Admission</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      {% for key, value in data.items %}
-      {% ifequal key "patientDetails" %}
-      {% for data in value %}
-      <th scope="row">{{data}}</th>
-      <td>{{patientName}}</td>
-      <td>{{patientAge}}</td>
-        <td>{{patientAdrs}}</td>
-         <td>{{patientDOJ}}</td>
-          <td>{{patientRtype}}</td>
-          {%endfor%}
-      {% endifequal %}
-      {% endfor%}
-         
-    </tr>
-   
+      {% for key, value in patientDetails.items %}
+      <th scope="col">{{value}}</th>
+      {%endfor%}   
   </tbody>
 </table>
 
@@ -74,16 +60,13 @@
 <pre>Bill for Room: Rs.<span>{{bedPrice}}</span> </pre>
 
 
-
-
-
-
 <!--pharmacy-->
 
-<br>
+<br><hr>
 <h3>Pharmacy Charges</h3>
  <table class="table table-striped">
   <thead>
+
     <tr>
       <th scope="col">Medicine</th>
       <th scope="col">Quantity</th>
@@ -93,29 +76,21 @@
     </tr>
   </thead>
   <tbody>
+    {% for meds in medicine %}
     <tr>
-      <td>Crocin</td>
-      <td>10</td>
-        <td>55</td>
-         <td>550</td>
-         
+      {%for rec in meds%}
+      <td>{{rec}}</td>
+        {% endfor %}
     </tr>
-   
-   <tr>
-      <td>Crocin</td>
-      <td>10</td>
-        <td>55</td>
-         <td>550</td>
-         
-    </tr>
+    {%endfor%}
   </tbody>
 </table>
-<pre>Bill for Pharmacy : Rs.<span>1234</span></pre>
+<pre>Bill for Pharmacy : Rs.<span>{{medcost}}</span></pre>
 <br>
 
 
 
-
+<hr>
 
 <!--diagnostics-->
 <h3>Diagnostic Charges</h3>
@@ -124,29 +99,25 @@
     <tr>
       <th scope="col">Name of Test</th>
       <th scope="col">Amount (Rs)</th>
-   
     </tr>
   </thead>
   <tbody>
+     {% for tests in DiagnosTest %}
     <tr>
-      <td>X-Ray</td>
-         <td>550</td>
-         
+      {%for test in tests%}
+      <td>{{test}}</td>
+        {% endfor %}
     </tr>
-   
-      <tr>
-      <td>X-Ray</td>
-         <td>550</td>
-         
-    </tr>
+    {%endfor%}
   </tbody>
 </table>
-<pre>Bill for Diagnostics : Rs.<span>1234</span></pre>
+<pre>Bill for Diagnostics : Rs.<span>{{testcost}}</span></pre>
 
 
 <br>
-<pre><b>Grant Total :</b> Rs.<span>1234</span></pre>
-<button type="button" class="btn btn-primary">Confirm</button>
+<pre><b>Grant Total :</b> Rs.<span>{{total}}</span></pre>
+<br>
+<button type="button" class="btn btn-primary" style="margin-bottom: 10%;">Confirm</button>
 </div>
 
 
@@ -155,5 +126,7 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+
   </body>
 </html>

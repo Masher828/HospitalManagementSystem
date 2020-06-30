@@ -1,0 +1,12 @@
+<form action="{% url 'diagnostic:testdiagnose' %}" method="POST">
+    {% csrf_token %}
+    patient ID : <input type="text" name="pid">
+    Test : <input type="text" name="testid">
+    <button name="submit">Add Test</button>
+    <div>
+        {%for msg in messages %}
+        <h3>{{ msg }}</h3>
+        {% endfor %}
+    </div>
+
+</form>

@@ -93,8 +93,8 @@ def fetchData(request):
 
 @csrf_exempt
 def fetchActivePatient(request):
-	if request.method == "POST":
-		ws_pat_id = request.POST['uid']
+	if request.method == "GET":
+		ws_pat_id = request.GET['uid']
 		if not (Userstore.objects.filter(ws_pat_id=ws_pat_id).exists()):
 			return HttpResponse(json.dumps({'exists':'no'}))
 		patientobj= get_object_or_404(Userstore,pk=ws_pat_id)
@@ -120,10 +120,10 @@ def billing(request):
 	else:
 		return render(request,"deskexecutive/billing.html")
 
+@csrf_exempt
 def checkout(request):
-	if request.method=="POST":
-		print("request",request.POST)
-		pid = request.POST['uid']
+	if request.method=="GET":
+		pid = request.GET['uid']
 		patientobj = get_object_or_404(Userstore,ws_pat_id=pid)
 		days = str(timezone.now() - patientobj.ws_doj)
 		days = int(days[0:days.index(" ")])+1
@@ -137,24 +137,22 @@ def checkout(request):
 		'patientId' : patientobj.ws_pat_id,
 		'patientName': patientobj.ws_pat_name,
 		'patientSSN' : patientobj.ws_ssn,
-		'patientAge' : patientobj.ws_pat_age,
-		'patientCity': patientobj.ws_city,
-		'patientState': patientobj.ws_state,
-		'patientAdrs' : patientobj.ws_adrs,
-		'patientStatus': patientobj.ws_status,
 		'patientRtype' : patientobj.ws_rtype,
+		'patientAge' : patientobj.ws_pat_age,
+		'patientAdrs' : patientobj.ws_adrs,
+		'patientCity': patientobj.ws_city,
 		'patientDOJ' : str(patientobj.prettyTime())
 		}
-		DiagnosTest= getDiagnosisList(pid)
-		medicine = getMedicineList(pid)
+		DiagnosTest, testcost= getDiagnosisList(pid)
+		medicine, medcost = getMedicineList(pid)
 		print(medicine)
 		print(DiagnosTest)
 		bedDetails={
 		'days':days,
 		'bedPrice':bedPrice
 		}
-		data = {"patientDetails":patientDetails,'beds':bedDetails}
-		return render(request,'deskexecutive/checkout.html',data)
+		data = {"patientDetails":patientDetails,'beds':bedDetails,'medicine':medicine,'DiagnosTest':DiagnosTest}
+		return render(request,'deskexecutive/checkout.html',{"total":medcost+testcost+bedPrice,"medcost":medcost,"testcost":testcost,"patientDetails":patientDetails,'days':days,'bedPrice':bedPrice,'medicine':medicine,'DiagnosTest':DiagnosTest})
 
 @csrf_exempt
 def searchPatient(request):

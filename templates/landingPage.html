@@ -20,14 +20,26 @@
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
+      {% ifequal user.staff.profession "Desk Exceutive" %}
+      <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
 
+        <a class="nav-link" href="{% url 'deskexecutive:deskHome' %}">Home <span class="sr-only">(current)</span></a>
+      </li>
+    </ul>
+
+    {% endifequal %}
+    {{user.staff.profession}}
+      {% if user.is_authenticated %}
+
+      {%else%}
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
         </ul>
         <span></span>
         <a href="{% url 'staff:loginStaff' %}"><button type="button" class="btn btn-primary" href="/loginstaff">Login</button></a>
         <a href="{% url 'staff:addStaff' %}"><button type="button" class="btn btn-primary" style=" margin-left: 15px !important;">Register</button></a>
-
+        {%endif%}
       </div>
     </nav>
 

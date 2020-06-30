@@ -30,11 +30,11 @@
     
         <ol>
             <li style=" margin: 20px !important;">
-                <a href=""><button type="button" class="btn btn-primary">View a patient detail</button>
+                <a href="{% url 'diagnostic:addDiagnosticTest' %}"><button type="button" class="btn btn-primary">Add test</button>
             </li></a>
     
             <li style=" margin: 20px !important;">
-                <a href=""><button type="button" class="btn btn-primary">Diagnostics screen</button></a>
+                <a href="{% url 'diagnostic:testdiagnose' %}"><button type="button" class="btn btn-primary">Diagnostics screen</button></a>
             </li>
         </ol>
     

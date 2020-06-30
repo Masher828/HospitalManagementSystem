@@ -7,109 +7,214 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-<style>
-        @import url('https://fonts.googleapis.com/css?family=Montserrat&display=swap');
-    
-        *{
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-          outline: none;
-          list-style: none;
-          font-family: 'Montserrat', sans-serif;
-        }
-        
-        body{
-          background: #e4eefa;
-        }
-        #frm{
-            position: absolute;
-            top: 40%;
-            left: 50%;
-            transform: translate(-50%,-50%);
-          }
-          #cart{
-            position: absolute;
-            top: 70%;
-            left: 60%;
-            transform: translate(-50%,-50%);
-          }
-        table, th, tr, td{
-            padding: 10px;
-            border: 1px solid black;
 
-        }
-</style>    
-</head>
+    <title>Issue Medicine</title>
+    <style type="text/css">
+      body{overflow: hidden;}
+    </style>
+  </head>
   <body>
-    <div id='frm'>
-        <label>Product Name</label><br>
-        <input id='pname' type='text'><br>
-        <label>Quantity</label><br>
-        <input id='pqty' type='number'><br>
-        <label>Unit Price</label><br>
-        <input id='price' type='number'><br>
-        <button onclick='addItem()'>Add item</button>
-        </div>
-        
-        <div id='cart'></div>
+   <!--navbar-->
 
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="{% url 'landingPage'%}">ABC Hospital</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
 
-<script>
-inames = []
-iqtyp = []
-iprice = []
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'deskexecutive:deskHome' %}">Home <span class="sr-only">(current)</span></a>
+      </li>
+    </ul>
+  </div>
+</nav>
 
-function addItem(){
-  
-  inames.push(document.getElementById('pname').value)
-  iqtyp.push(parseInt(document.getElementById('pqty').value))
-  iprice.push(parseInt(document.getElementById('price').value))
-  
-  displayCart()
+    <!--navbar ends-->
+<!--tempcode-->
+
+     <span id="qwe" style="visibility: hidden; height: 0px;">{{patientDetails.patientId}}</span>
    
-}
 
-function displayCart(){
-  
-  
-  cartdata = '<table><tr><th>Product Name</th><th>Quantity</th><th>Price</th><th>Total</th></tr>';
-  x = 'Total Amt'
-  total = 0;
-  
-  for (i=0; i<inames.length; i++){
-    total += iqtyp[i] * iprice[i]
-    cartdata += "<tr><td>" + inames[i] + "</td><td>" + iqtyp[i] + "</td><td>" + iprice[i] + "</td><td>" + iqtyp[i] * iprice[i] + "</td><td><button onclick='delElement(" + i + ")'>Delete</button></td></tr>"
-  }
-  
-  cartdata += '<tr><td>' + x + '</td><td></td><td></td><td>' + total + '</td></tr></table>'
-  
-  document.getElementById('cart').innerHTML = cartdata
-  
-}
+<!--tempcode-->
 
 
-function delElement(a){
-  inames.splice(a, 1);
-  iqtyp.splice(a, 1)
-  iprice.splice(a, 1)
-  displayCart()
-}
-</script>
-    
+
+
+<div class="container-fluid bg-light" style="width: 100%; padding-bottom: 10%; height: 100vh; overflow: auto; text-align: center; overflow: auto;">
+  <h1>Patient Billing</h1>
+  <table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col" >Id</th>
+      <th scope="col">Name</th>
+      <th scope="col">SSN</th>
+      <th scope="col">Room Type</th>
+      <th scope="col">Age</th>
+      <th scope="col">Address</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      {% for key, value in patientDetails.items %}
+      <th scope="col">{{value}}</th>
+      {%endfor%}   
+  </tbody>
+</table>
+
+
+<!--pharmacy-->
+
+<br><hr>
+<h3>Medicine Issued</h3>
+ <table class="table table-striped">
+  <thead>
+
+    <tr>
+      <th scope="col">Medicine</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Rate (Rs)</th>
+      <th scope="col">Amount (Rs)</th>
+   
+    </tr>
+  </thead>
+  <tbody id="tbibody">
+    {% for meds in medicine %}
+    <tr>
+      {%for rec in meds%}
+      <td>{{rec}}</td>
+        {% endfor %}
+    </tr>
+    {%endfor%}
+  </tbody>
+</table>
+<br>
+
+
+
+<hr>
+
+<h1>Add Medicines</h1>
+<pre>Medicine Name : <input type="text" name="" id="medlist"></pre>
+<pre>Quantity        : <select name="quans" id="quans" style="width: 20%;">
+  
+</select></pre>
+<button type="button" class="btn btn-primary" onclick="addtotabletemp()">Add</button>
+
+<br><hr>
+
+</div>
+
+
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-    <script>$(".default_option").click(function(){
-        $(".dropdown ul").addClass("active");
-      });
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+ <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
+
+<script type="text/javascript">
+  var tags=[];
+  var quan=[];
+  var medid=[];
+  var pricet=[];
+   function myFunction(){
       
-      $(".dropdown ul li").click(function(){
-        var text = $(this).text();
-        $(".default_option").text(text);
-        $(".dropdown ul").removeClass("active");
-      });</script>
-</body>
+          $.ajax({
+         type: "POST",
+        cache: false,
+         url: "getmedlist/",
+         datatype: "html",
+         data :"",
+        
+         success: function(result) {
+          var data=JSON.parse(result)
+          var size=data['len'];
+          for(var i=0;i<size;i++)
+          {
+            console.log(data[i][0]);
+            tags.push(data[i][0]);
+            medid.push(data[i][1]);
+            quan.push(data[i][2]);
+            pricet.push(data[i][3]);
+
+          }
+          console.log(pricet);
+
+
+           $( "#medlist" ).autocomplete({ 
+      source: tags 
+  
+    }); 
+    
+
+    
+
+    }
+
+     });
+
+      }
+
+
+
+window.onload = myFunction;
+
+
+$( "#medlist" ).change(function() {
+  $('#quans').empty();
+var value=document.getElementById('medlist').value;
+  var index=tags.indexOf(value);
+  for(var j=0;j<=quan[index];j++){
+    $('#quans').append($('<option>', { 
+        value: j,
+        text : j,
+    }));
+
+}
+
+});
+
+  
+function addtotabletemp() {
+  var value=document.getElementById('medlist').value;
+  var index1=tags.indexOf(value);
+  console.log(index1);
+  var quantity=$('#quans').children("option:selected").val();
+  var price=pricet[index1];
+  var amount=price*quantity;
+  var mid=medid[index1];
+  var pid1=document.getElementById('qwe').innerHTML;
+
+
+        $.ajax({
+         type: "POST",
+        cache: false,
+         url: "",
+         datatype: "html",
+         data :{pid: pid1, medid: mid, qty:quantity},
+        
+         success: function(result) {
+          if(result=='success'){
+  $('#tbibody').append('<tr><td>'+value+'</td><td>'+quantity+'</td><td>'+price+'</td><td>'+amount+'</td></tr>');
+}
+else{alert("Failed to add.");}
+    
+
+    }
+
+     });
+
+
+}  
+
+</script>
+
+  </body>
 </html>

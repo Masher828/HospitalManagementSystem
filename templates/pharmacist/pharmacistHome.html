@@ -33,11 +33,11 @@
             </li>
     
             <li style=" margin: 20px !important;">
-                <button type="button" class="btn btn-primary">Issue medicines</button>
+                <a href="{% url 'pharmacist:getPatientId' %}"><button type="button" class="btn btn-primary">Issue medicines</button></a>
             </li>
     
             <li style=" margin: 20px !important;">
-                <button type="button" class="btn btn-primary">Update medicine stock</button>
+                <a href="{% url 'pharmacist:addMedicine' %}"><button type="button" class="btn btn-primary">Update medicine stock</button></a>
             </li>
     
            
